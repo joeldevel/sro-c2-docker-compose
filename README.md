@@ -273,7 +273,14 @@ Para la documentación creamos una imagen de mkdocs y le instalamos el tema mate
 - crear la imagen
 - crear el sitio 
 - modificar el index.md con la info
+- en el `mkdocs.yml` poner
+  ```yaml
+    site_name: Desafio Docker compose
+    theme:
+        name: material
+  ```
 - correr el build  // sitio listo para subir a cualquier servidor
+- copiar el directorio `site` al directorio donde ejecutaremos `docker compose up`
 
 ## Links útiles
 
