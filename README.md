@@ -2,9 +2,14 @@
 
 Ejecutar varios contenedores detras de un proxy reverso
 
+## Demo:
+1. Descargar o clonar el repo. 
+2. Crear las entradas en `/etc/hosts`. 
+3. Correr `docker compose up`
+
 Ver el repo [Desafio-docker-compose](https://github.com/joeldevel/sro-c2-docker-compose).
 
-## Pasos
+## Pasos seguidos en este desafío
 
 ###  Crear entradas en `/etc/hosts` para
 
