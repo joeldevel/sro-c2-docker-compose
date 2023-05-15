@@ -1,0 +1,91 @@
+version: '3.8'
+services:
+    wordpress:
+        image: wordpress
+        restart: always
+        environment:
+            - WORDPRESS_DB_HOST=wordpressdb
+            - WORDPRESS_DB_PASSWORD=secret
+            - WORDPRESS_DB_NAME=wordpress
+            - WORDPRESS_DB_USER=manager
+            - VIRTUAL_HOST=wp.local
+        depends_on:
+            - wordpressdb
+        volumes:
+            - wordpress:/var/www/html
+        networks: 
+            - wp-net
+
+    wordpressdb:
+        image: mariadb
+        restart: always
+        environment:
+            - MYSQL_ROOT_PASSWORD=secret
+            - MYSQL_DATABASE=wordpress
+            - MYSQL_USER=manager
+            - MYSQL_PASSWORD=secret
+        volumes:
+            - wordpressdb:/var/lib/mysql
+        networks: 
+            - wp-net
+
+    joomla:
+        image: bitnami/joomla
+        restart: always
+        environment:
+            - JOOMLA_DATABASE_PORT=3306
+            - JOOMLA_DATABASE_HOST=joomladb
+            - JOOMLA_DATABASE_USER=bn_joomla
+            - JOOMLA_DATABASE_NAME=bitnami_joomla
+            - ALLOW_EMPTY_PASSWORD=yes
+            - VIRTUAL_HOST=joomla.local 
+            - VIRTUAL_PORT=8080
+        depends_on:
+            - joomladb
+        ports:
+            - 8080:8080
+        networks:
+            - joomla-net
+        volumes:
+            - joomla_data:/bitnami/joomla
+
+    joomladb:
+        image: bitnami/mariadb
+        restart: always
+        environment:
+            - ALLOW_EMPTY_PASSWORD=yes
+            - MARIADB_DATABASE=bitnami_joomla
+            - MARIADB_USER=bn_joomla
+        networks:
+            - joomla-net
+        volumes:
+            - joomladb_data:/bitnami/mariadb
+
+    docs:
+        image: nginx
+        environment:
+            - VIRTUAL_HOST=docs.local
+        volumes:
+            - ./site:/usr/share/nginx/html:ro
+        networks:
+            - docs-net
+
+    ingress:
+        image: nginxproxy/nginx-proxy
+        ports:
+            - 80:80
+        volumes:
+            - /var/run/docker.sock:/tmp/docker.sock:ro
+        networks:
+            - wp-net
+            - joomla-net
+            - docs-net
+networks:
+    wp-net:
+    joomla-net:
+    docs-net:
+volumes:
+    wordpress:
+    wordpressdb:
+    joomla_data:
+    joomladb_data:
